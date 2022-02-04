@@ -21,7 +21,7 @@ Pretend the next one who should maintain your code is:
 ### Do not use abbreviations
 
 Characters are free to use.
-Do not use abbreviations or minified code when writing a variable, a function, a class, a method.
+Do not use abbreviations or minified code when writing a variable, function, class or method name.
 
 ```javascript
 // bad
@@ -59,6 +59,18 @@ const MAXIMUM_AMOUNT_IN_EURO = 100000;
 
 if (amount > MAXIMUM_AMOUNT_IN_EURO) {
     console.log('you are requesting too much')
+}
+
+// bad
+if (process.runningTime > 3600000) {
+    console.log('one hour is passed')
+}
+
+// good
+const MILLISENCONDS_IN_ONE_HOUR = 1000 * 60 * 60;
+
+if (process.runningTime > MILLISECONDS_IN_ONE_HOUR) {
+    console.log('one hour is passed')
 }
 ```
 
@@ -246,6 +258,45 @@ const isParameterPresent = parameter !== null && parameter !== undefined;
 
 ## Avoid deep nesting
 
-You may be a Tekken fan, but please don't do this.
+You may be a Street Fighter fan, but please don't do this.
 
 ![Nested Hadouken](https://miro.medium.com/max/720/1*g4NuK2wpgB5hn_46bvzPmQ.png)
+
+### Prefer early return to long if-else chain
+
+```javascript
+// bad
+function evaluateStep() {
+  let response;
+  
+  if (condition1) {
+    response = 'first';
+      if (condition1_1) {
+        response = 'first_first';
+      } else if (condition1_2) {
+        response = 'first_second';
+      }
+  } else {
+    response = 'second';
+  }
+
+  return response;
+}
+
+// better - no-else technique
+function evaluateStep() { 
+  if (condition1_1) {
+    return 'first_first';
+  }
+  
+  if (condition1_2) {
+    return 'first_second';
+  }
+  
+  if (condition1) {
+    return 'first';
+  }
+  
+  return 'second';
+}
+```
