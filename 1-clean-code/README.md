@@ -300,3 +300,33 @@ function evaluateStep() {
   return 'second';
 }
 ```
+
+### Prefer functional expressions
+
+```javascript
+// bad - nesting and indentation
+const numbers = [0, 1, 2, 3, 4, 5, 6];
+
+const oddNumbersMultipliedBy3 = [];
+
+numbers.forEach(number => {
+    if (number % 2 !== 0) {
+        oddNumbersMultipliedBy3.push(number * 3);
+    }
+});
+
+console.log(oddNumbersMultipliedBy3); // [3, 9, 15]
+
+// better - less performant, more readable, less cognitive effort
+const numbers = [0, 1, 2, 3, 4, 5, 6];
+
+const keepOnlyOdd = number => number % 2 !== 0;
+const multiplyBy3 = number => number * 3;
+
+const oddNumbersMultipliedBy3 = numbers
+    .filter(keepOnlyOdd)
+    .map(multiplyBy3);
+
+console.log(oddNumbersMultipliedBy3); // [3, 9, 15]
+```
+
