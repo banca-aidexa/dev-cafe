@@ -203,7 +203,7 @@ private Bitmap getBitmapFromDrawable(@NonNull Drawable drawable) {
 // bad - tautological comment
 // this function sums two numbers.
 // It returns NaN if one of the argument is not a number. 
-// It throws an error if both parameters are not number
+// It throws an error if both arguments are not number
 function sum(a, b) {
     if (Number.isNaN(a) || Number.isNaN(b)) {
         return Number.NaN;
