@@ -39,9 +39,9 @@ function getFullName(user) {
 }
 ```
 
-### Pick a convenction and stick to it
+### Pick a convention and stick to it
 
-Do not mix `camelCase`, `PascalCase` and `snake_case`.
+Do not mix `camelCase`, `PascalCase`, `snake_case` and `kebab-case` when naming classes and methods.
 Pick one and stick to it.
 
 ### Do not use Magic Numbers
