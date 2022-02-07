@@ -11,7 +11,8 @@ Clean Code is (more) secure code.
 Pretend the next one who should maintain your code is:
 
 1. a serial killer
-1. who knows your home address
+2. who knows your home address
+3. you
 
 ## Naming things
 
@@ -42,7 +43,7 @@ function getFullName(user) {
 ### Pick a convention and stick to it
 
 Do not mix `camelCase`, `PascalCase`, `snake_case` and `kebab-case` when naming classes and methods.
-Pick one and stick to it.
+Pick one, following the language's naming conventions, and stick to it.
 
 ### Do not use Magic Numbers
 
@@ -87,9 +88,10 @@ addToDate(date, 1);
 // good
 function addMonthToDate(month, date) {
   // ...
+  return newDate;
 }
 const date = new Date();
-addMonthToDate(1, date);
+const newDate = addMonthToDate(1, date);
 ```
 
 ### Clearly express conditions
@@ -160,16 +162,18 @@ doStuff();
 // good - code to overcome a specific issue
 function getDocument() {
     // Internet Explorer specific work-around
-    return document.getElementsById;
-
-    return document.querySelectorAll;
+    if (isInternetExplorer) {
+        return document.getElementsById;
+    } else {
+        return document.querySelectorAll;
+    }
 }
 
 // --------------------------------------------
 
 // good - optimized code which must stay this way for performance reasons
 
-/* This is the fastest implementation of the hasing algorithm
+/* This is the fastest implementation of the hashing algorithm
 * we have optimized it because the readable version was 200x slower and was impacting UX
 */
 function hashIt(data) {
@@ -185,6 +189,7 @@ function hashIt(data) {
   }
 }
 ```
+
 ```java
 // good - copied code from external source
 // Converts a Drawable to Bitmap. via https://stackoverflow.com/a/46018816/2219998.
@@ -210,7 +215,7 @@ function sum(a, b) {
     }
 
     if (Number.isNaN(a) && Number.isNaN(b)) {
-        throws new Error('both the arguments are not number');
+        throw new Error('both the arguments are not number');
     }
 
     return a + b;
@@ -223,7 +228,7 @@ function sum(a: number, b: number): number {
     }
 
     if (Number.isNaN(a) && Number.isNaN(b)) {
-        throws new Error('both the arguments are not number');
+        throw new Error('both the arguments are not number');
     }
 
     return a + b;
@@ -231,7 +236,7 @@ function sum(a: number, b: number): number {
 
 // ... in test file
 
-expect(sum(1,2)).toBe(3);
+expect(sum(1, 2)).toBe(3);
 expect(sum('a', 2)).toBe(Number.NaN);
 expect(sum('a', 'b')).toThrowError('both the arguments are not number')
 ```
@@ -266,6 +271,7 @@ You may be a Street Fighter fan, but please don't do this.
 
 ### Prefer early return to long if-else chain
 
+#### 1
 ```javascript
 // bad
 function evaluateStep() {
@@ -300,6 +306,64 @@ function evaluateStep() {
   }
   
   return 'second';
+}
+```
+
+#### 2
+```kotlin 
+// In such functional languages, as kotlin or scala, everithing returns values, cause everithing is a function.
+// So we can just return the if statemet (also when, for, where)
+
+//bad
+fun evaluateStep(step: Step): String{
+    if(step.condition1) {
+        return "first"
+    } else if(condition2) {
+        return "second"
+    } else {
+        return "default"
+    }
+}
+
+//good
+fun evaluateStep(step: Step): String{
+    return if(step.condition1) {
+        "first"
+    } else if(condition2) {
+        "second"
+    } else {
+        "default"
+    }
+}
+```
+
+### Avoid side effects
+```kotlin
+// A pure function is (also) a function without side effects.
+// Having no side effects improve the code testability, reduce the maintenance complexity and create thread safe code. 
+//bad - Do not change the input variables
+var nowDate = LocalDateTime.now()
+println(nowDate) //now
+fun addMonthsToDate(monthsToAdd: Int): LocalDateTime{
+    this.nowDate = nowDate.plushMonths(monthsToAdd)
+}
+addMonthsToDate(42)
+println(nowDate) //now + 42 months
+
+//good - return always something that do not change input variables (Side Effect)
+fun addMonthsToDate(date: LocalDateTime, monthsToAdd: Int): LocalDateTime{
+    return date.plushMonths(monthsToAdd)
+}
+
+//better - specific for kotlin language with extension on LocalDateTime
+fun LocalDateTime.addMonthsToDate(monthsToAdd: Int): LocalDateTime{
+    //...
+    return this.plusMonths(monthsToAdd)
+}
+
+fun main() {
+    val date = LocalDateTime.now()
+    val dateWithTwoMonths = date.addMonthsToDate(2)
 }
 ```
 
