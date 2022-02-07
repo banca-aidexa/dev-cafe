@@ -410,8 +410,9 @@ const oddNumbersMultipliedBy3 = numbers
 console.log(oddNumbersMultipliedBy3); // [3, 9, 15]
 ```
 
+## Functions
 
-## Avoid side effects
+### Avoid side effects
 ```kotlin
 // A pure function is (also) a function without side effects.
 // Having no side effects improve the code testability, reduce the maintenance complexity and create thread safe code. 
