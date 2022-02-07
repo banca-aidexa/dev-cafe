@@ -40,6 +40,35 @@ function getFullName(user) {
 }
 ```
 
+#### This is true for loops, too
+
+```javascript
+// bad
+const processes = customer.getAllProcesses();
+
+processes.forEach(p => {
+  sendEmail(p.email);
+  extractTheName(p.fullName);
+  // ...
+  // ...
+  // ...
+  // what was p ???
+  dispatch(p);
+});
+
+// good
+const processes = customer.getAllProcesses();
+
+processes.forEach(process => {
+  sendEmail(process.email);
+  extractTheName(process.fullName);
+  // ...
+  // ...
+  // ...
+  dispatch(process);
+});
+```
+
 ### Pick a convention and stick to it
 
 Do not mix `camelCase`, `PascalCase`, `snake_case` and `kebab-case` when naming classes and methods.
@@ -74,6 +103,21 @@ if (process.runningTime > MILLISECONDS_IN_ONE_HOUR) {
     console.log('one hour is passed')
 }
 ```
+
+### Use the same vocabulary for the same type of variable
+
+```javascript
+// bad
+getUserInfo();
+getClientTransactions();
+getCustomerScore();
+
+// good
+getUserInfo();
+getUserTransactions();
+getUserScore();
+```
+
 
 ### Express what your function is doing
 
@@ -271,7 +315,7 @@ You may be a Street Fighter fan, but please don't do this.
 
 ### Prefer early return to long if-else chain
 
-#### 1
+#### No-else technique
 ```javascript
 // bad
 function evaluateStep() {
@@ -337,36 +381,6 @@ fun evaluateStep(step: Step): String{
 }
 ```
 
-### Avoid side effects
-```kotlin
-// A pure function is (also) a function without side effects.
-// Having no side effects improve the code testability, reduce the maintenance complexity and create thread safe code. 
-//bad - Do not change the input variables
-var nowDate = LocalDateTime.now()
-println(nowDate) //now
-fun addMonthsToDate(monthsToAdd: Int): LocalDateTime{
-    this.nowDate = nowDate.plushMonths(monthsToAdd)
-}
-addMonthsToDate(42)
-println(nowDate) //now + 42 months
-
-//good - return always something that do not change input variables (Side Effect)
-fun addMonthsToDate(date: LocalDateTime, monthsToAdd: Int): LocalDateTime{
-    return date.plushMonths(monthsToAdd)
-}
-
-//better - specific for kotlin language with extension on LocalDateTime
-fun LocalDateTime.addMonthsToDate(monthsToAdd: Int): LocalDateTime{
-    //...
-    return this.plusMonths(monthsToAdd)
-}
-
-fun main() {
-    val date = LocalDateTime.now()
-    val dateWithTwoMonths = date.addMonthsToDate(2)
-}
-```
-
 ### Prefer functional expressions
 
 ```javascript
@@ -396,3 +410,33 @@ const oddNumbersMultipliedBy3 = numbers
 console.log(oddNumbersMultipliedBy3); // [3, 9, 15]
 ```
 
+
+## Avoid side effects
+```kotlin
+// A pure function is (also) a function without side effects.
+// Having no side effects improve the code testability, reduce the maintenance complexity and create thread safe code. 
+//bad - Do not change the input variables
+var nowDate = LocalDateTime.now()
+println(nowDate) //now
+fun addMonthsToDate(monthsToAdd: Int): LocalDateTime{
+    this.nowDate = nowDate.plushMonths(monthsToAdd)
+}
+addMonthsToDate(42)
+println(nowDate) //now + 42 months
+
+//good - return always something that do not change input variables (Side Effect)
+fun addMonthsToDate(date: LocalDateTime, monthsToAdd: Int): LocalDateTime{
+    return date.plushMonths(monthsToAdd)
+}
+
+//better - specific for kotlin language with extension on LocalDateTime
+fun LocalDateTime.addMonthsToDate(monthsToAdd: Int): LocalDateTime{
+    //...
+    return this.plusMonths(monthsToAdd)
+}
+
+fun main() {
+    val date = LocalDateTime.now()
+    val dateWithTwoMonths = date.addMonthsToDate(2)
+}
+```
