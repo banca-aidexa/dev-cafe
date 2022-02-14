@@ -37,6 +37,8 @@ test('createUser should return a good User', () => {
 })
 ```
 
+Can you see it? They are very similar to **Acceptance Criteria's** GIVEN/WHEN/THEN.
+
 
 ## How to test Front End projects
 
