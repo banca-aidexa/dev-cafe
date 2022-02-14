@@ -13,6 +13,31 @@ The more your tests resemble the way your software is used, the more confidence 
 
 > Code without unit tests is Legacy Code.
 
+## How you should write your Unit Tests
+
+You should use the same rule of Clean Code when writing tests. 
+Use the following convention:
+
+1. **A**rrange: it is the part where you setup your mock and prepare the context to run the test.
+1. **A**ct: it is when you "stimulate" the test making the component under test do its job.
+2. **A**ssert: it is where you check your expectations.
+
+Example:
+```javascript
+test('createUser should return a good User', () => {
+    // Arrange
+    const name = 'aName';
+    const surname = 'aSurname';
+    
+    // Act
+    const user = createUser(name, surname);
+    
+    // Assert
+    expect(user.fullName).toBe('aName aSurname');
+})
+```
+
+
 ## How to test Front End projects
 
 You should clearly separe:
