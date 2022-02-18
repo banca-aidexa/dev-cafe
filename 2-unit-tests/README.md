@@ -131,10 +131,24 @@ test('calls onClick prop when clicked', () => {
 
 ## How to test Microservices
 
+You should clearly separe:
+
+- `Controller` classes provide REST endpoints and deal with HTTP requests and responses
+- `Repository` classes interface with the database and take care of writing and reading data to/from persistent storage
+- `Client` classes talk to other APIs,like fetching JSON responses via HTTP from 3rd party providers
+
 https://martinfowler.com/articles/practical-test-pyramid.html
+
+### Use
+
+- [JUnit 5](https://junit.org/junit5/)
+- [Mockito](https://site.mockito.org/)
+- [MockMVC](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/test/web/servlet/MockMvc.html)
+- [WireMock](https://wiremock.org/)
 
 ## How to test ETL / Data-related stuffs
 
+TODO
 
 ## Agile Development Learning Path
 
