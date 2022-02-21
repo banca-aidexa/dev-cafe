@@ -21,6 +21,18 @@ The more your tests resemble the way your software is used, the more confidence 
 
 > Code without unit tests is Legacy Code.
 
+## What should i test?
+
+The good thing about unit tests is that you can write them for all your production code classes, regardless of their functionality or which layer in your internal structure they belong to. You can unit tests controllers just like you can unit test repositories, domain classes or file readers. 
+
+A unit test  should at least test the _public interface_ of the unit under test. Private methods/functions which are used in the public interface should be already covered by testing the public methods.
+
+I often hear opponents of unit testing (or TDD ) arguing that writing unit tests becomes pointless work where you have to test all your methods in order to come up with a high test coverage. They often cite scenarios where an overly eager team lead forced them to write unit tests for getters and setters and all other sorts of trivial code in order to come up with 100% test coverage.
+
+There's so much wrong with that.
+
+Yes, you should test the public interface. More importantly, however, you don't test trivial code. Don't worry, [Kent Beck said it's ok.](https://stackoverflow.com/questions/153234/how-deep-are-your-unit-tests/) You won't gain anything from testing simple getters or setters or other trivial implementations (e.g. without any conditional logic). Save the time, that's one more meeting you can attend, hooray!
+
 ## How you should write your Unit Tests
 
 In order to test a single Unit you should _mock or stub_ the other collaborators of the Unit. A collaborator is another class, method, function used in that particular Unit.
@@ -60,13 +72,13 @@ public class CreditEnginesController {
 
 Once you got a hang of writing unit tests you will become more and more fluent in writing them. Stub out external collaborators, set up some input data, call your subject under test and check that the returned value is what you expected.
 
-There's a fine line when it comes to writing unit tests: they should ensure that all your non-trivial code paths are tested (including happy path and edge cases). At the same time they shouldn't be tied to your implementation too closely.
-
 ### Mocks and Stubs
 
 Using Mocks or Stubs means that you replace a real thing (e.g. a class, module or function) with a fake version of that thing. The fake version looks and acts like the real thing (answers to the same method calls) but answers with canned responses that you define yourself at the beginning of your unit test.
 
 Regardless of your technology choice, there's a good chance that either your language's standard library or some popular third-party library will provide you with elegant ways to set up mocks. And even writing your own mocks from scratch is only a matter of writing a fake class/module/function with the same signature as the real one and setting up the fake in your test.
+
+They let you focus on testing the real thing under test.
 
 ### Structure of the test
 
@@ -94,6 +106,20 @@ test('createUser should return a good User', () => {
 
 Can you see it? They are very similar to **Acceptance Criteria's** GIVEN/WHEN/THEN.
 
+### Do not test implementation details
+
+There's a fine line when it comes to writing unit tests: they should ensure that all your non-trivial code paths are tested (including happy path and edge cases). At the same time they shouldn't be tied to your implementation too closely.
+Tests that are too close to the production code quickly become annoying. As soon as you refactor your production code (quick recap: refactoring means changing the internal structure of your code without changing the externally visible behaviour) your unit tests will break.
+
+This way you lose one big benefit of unit tests: acting as a safety net for code changes. You rather become fed up with those stupid tests failing every time you refactor, causing more work than being helpful; and whose idea was this stupid testing stuff anyways?
+
+What do you do instead? Don't reflect your internal code structure within your unit tests. Test for __observable behaviour__ instead. Think about
+
+if _I enter values X and Y, will the sum function return Z?_
+
+instead of
+
+if _I enter X and Y, will the method SUM of the intenral class MATH be called and the result is give as output of the sum function?_
 
 ## How to test Front End projects
 
