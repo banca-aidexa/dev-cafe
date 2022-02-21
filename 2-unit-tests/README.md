@@ -27,6 +27,7 @@ In order to test a single Unit you should _mock or stub_ the other collaborators
 
 ```java
 @RestController
+// this is tghe Unit under test
 public class CreditEnginesController {
 
     // this is a collaborator
@@ -56,6 +57,16 @@ public class CreditEnginesController {
     }
 }
 ```
+
+Once you got a hang of writing unit tests you will become more and more fluent in writing them. Stub out external collaborators, set up some input data, call your subject under test and check that the returned value is what you expected.
+
+There's a fine line when it comes to writing unit tests: they should ensure that all your non-trivial code paths are tested (including happy path and edge cases). At the same time they shouldn't be tied to your implementation too closely.
+
+### Mocks and Stubs
+
+Using Mocks or Stubs means that you replace a real thing (e.g. a class, module or function) with a fake version of that thing. The fake version looks and acts like the real thing (answers to the same method calls) but answers with canned responses that you define yourself at the beginning of your unit test.
+
+Regardless of your technology choice, there's a good chance that either your language's standard library or some popular third-party library will provide you with elegant ways to set up mocks. And even writing your own mocks from scratch is only a matter of writing a fake class/module/function with the same signature as the real one and setting up the fake in your test.
 
 ### Structure of the test
 
