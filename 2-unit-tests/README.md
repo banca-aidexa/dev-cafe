@@ -4,6 +4,14 @@ Unit Testing is the art of writing maintenable source code. And you do so by wri
 
 > Unit Testable code is Clean Code.
 
+The foundation of your test suite will be made up of unit tests. The number of unit tests in your test suite will largely outnumber any other type of test.
+
+## What is a Unit?
+
+If you ask three different people what _"unit"_ means in the context of unit tests, you'll probably receive four different, slightly nuanced answers. To a certain extent it's a matter of your own definition and it's okay to have no canonical answer.
+
+If you're working in a functional language a unit will most likely be a single function. Your unit tests will call a function with different parameters and ensure that it returns the expected values. In an object-oriented language a unit can range from a single method to an entire class.
+
 ## Why you should write Unit Tests
 
 We are in continuous search of faster bugs-free software delivery.
@@ -14,6 +22,42 @@ The more your tests resemble the way your software is used, the more confidence 
 > Code without unit tests is Legacy Code.
 
 ## How you should write your Unit Tests
+
+In order to test a single Unit you should _mock or stub_ the other collaborators of the Unit. A collaborator is another class, method, function used in that particular Unit.
+
+```java
+@RestController
+public class CreditEnginesController {
+
+    // this is a collaborator
+    private final MaxAmountRepository maxAmountRepository;
+    // this is a collaborator
+    private final BureauClient bureauClient;
+
+    @Autowired
+    public CreditEnginesController(final MaxAmountRepository maxAmountRepository, final BureauClient bureauClient) {
+        this.maxAmountRepository = maxAmountRepository;
+        this.bureauClient = bureauClient;
+    }
+
+    @GetMapping("/credit-policies/max-amount/{piva}")
+    public String maxAmount(@PathVariable final String piva) {
+        var maxAmount = maxAmountRepository.findBy(piva);
+
+        return maxAmount
+                .orElse(DEFAULT_MAX_AMOUNT);
+    }
+
+    @GetMapping("/credit-policies/unpaids/{piva}")
+    public Unpaid[] unpaids(@PathVariable final String piva) {
+        return bureauClient.fetchUnpaids()
+                .map(BureauResponse::getUnpaids)
+                .orElse(SingletonList.emptyList());
+    }
+}
+```
+
+### Structure of the test
 
 You should use the same rule of Clean Code when writing tests. 
 Use the following convention:
