@@ -70,12 +70,84 @@ While it may be good for very easy toggles, as soon as you need to check the tog
 ### Keep decision points separated from decision logic
 
 ```javascript
-function generateInvoiceEmail(){
-    const baseEmail = buildEmailForInvoice(this.invoice);
-    if( features.isEnabled("next-gen-ecomm") ){ 
-      return addOrderCancellationContentToEmail(baseEmail);
+const features = fetchFeatureTogglesFromSomewhere();
+
+function calculateScoring(guid){
+    const transactions = getTransactions(guid);
+    if (features.isEnabled("scoring-v2")) { 
+      return scoringV2(transactions);
     }else{
-      return baseEmail;
+      return scoring(transactions);
     }
   }
 ```
+
+While this looks like a reasonable approach, it's very brittle.
+The decision on whether to use the new alghorithm is wired directly in the feature - using a magic string _"scoring-v2"_, no less.
+
+Consider the **scoring-v2** is returning _more_ date then V1 and I need to treat those data if present. I will ahve another place in my code where I have to repeat my if.
+
+What happens if we'd like to turn it on only on Invidual Companies?
+What happens if we want to enable it only on onboarding started in April?
+
+So we can refactor using:
+
+```javascript
+const features = centralizedFeatureRepository();
+
+function calculateScoring(guid){
+    const transactions = getTransactions(guid);
+    if (features.isScoringV2Enabled(companyData)) { 
+      return scoringV2(transactions);
+    }else{
+      return scoring(transactions);
+    }
+  }
+  
+// ---
+
+export const centralizedFeatureRepository = () => {
+    const features = fetchFeatureTogglesFromDB();
+    
+    return {
+        isScoringEnabled: (companyData) => {
+            return features.isEnabled("scoring-v2") && companyData.form === 'DI';
+       } 
+   };
+    
+};
+
+```
+
+So I can re-use the centralized repository in different part of the code, keeping the toogle logic in one place.
+
+### Inversion of decision
+
+If I don't want my code to have any if expression at all, I can use the power of composition and inversion to achieve the same result.
+
+```javascript
+function calculateScoring(guid, scoringAlgorithm){
+   const transactions = getTransactions(guid);
+   return scoringAlgorithm(transactions);
+}
+  
+// ---
+
+const scoringToBeUsed = centralizedFeaturesRepository.isScoringV2Enabled? scoringV2 : scoring;
+calculateScoring(guid, scoringToBeUsed);
+
+```
+
+## Best practices
+
+### Expose current feature toggle configuration
+
+With a static file, a dashboard or a metadata endpoint like Spring Actuator.
+
+### Prefer static configuration
+
+Use code-committed toggles configuration so you can track easily all the changes and know the current status.
+Do not redeploy the whole app, just the kubernetes deployement
+
+### Try Azure App Configuration ???
+https://docs.microsoft.com/en-us/azure/azure-app-configuration/overview
